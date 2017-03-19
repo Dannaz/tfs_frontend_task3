@@ -1,8 +1,14 @@
 "use strict";
 
 var listElement = document.querySelector('.list');
+var statisticElement = document.querySelector('.statistic');
 var itemElementList = listElement.children;
-
+var todoListEvents = {
+    ON_ADD: 'add',
+    ON_REMOVE: 'remove',
+    ON_DONE: 'done',
+    ON_UNDONE: 'undone'
+};
 
 var templateElement = document.getElementById('todoTemplate');
 var templateContainer = 'content' in templateElement ? templateElement.content : templateElement;
@@ -48,11 +54,13 @@ function onListClick(event) {
     if (isStatusBtn(target)) {
         element = target.parentNode;
         changeTodoStatus(element);
+        updateStatistic();
     }
 
     if (isDeleteBtn(target)) {
         element = target.parentNode;
         deleteTodo(element);
+        updateStatistic();
     }
 }
 
@@ -92,6 +100,7 @@ function onInputKeydown(event) {
 
     var todo = createNewTodo(todoName);
     insertTodoElement(addTodoFromTemplate(todo));
+    updateStatistic();
 
 }
 
@@ -113,6 +122,7 @@ function createNewTodo(name) {
 todoList
     .map(addTodoFromTemplate)
     .forEach(insertTodoElement);
+updateStatistic();
 
 listElement.addEventListener('click', onListClick);
 
@@ -128,4 +138,18 @@ function insertTodoElement(elem) {
     } else {
         listElement.appendChild(elem);
     }
+}
+
+function updateStatistic() {
+    var total = statisticElement.querySelector('.statistic__total');
+    var todo = statisticElement.querySelector('.statistic__done');
+    var done = statisticElement.querySelector('.statistic__left');
+
+    total.textContent = listElement.querySelectorAll('.list__item, .task').length.toString();
+    todo.textContent = listElement.querySelectorAll('.task_done').length.toString();
+    done.textContent = listElement.querySelectorAll('.task_todo').length.toString();
+}
+
+function calcStatistic(element) {
+
 }
