@@ -1,6 +1,7 @@
 "use strict";
 
 var listElement = document.querySelector('.list');
+var filtersElement = document.querySelector('filters');
 var statisticElement = document.querySelector('.statistic');
 var itemElementList = listElement.children;
 var todoListEvents = {
@@ -62,6 +63,11 @@ function onListClick(event) {
         deleteTodo(element);
         updateStatistic();
     }
+}
+
+function onFiltersClick(event) {
+    var target = event.target;
+    var currentSelection
 }
 
 function isStatusBtn(target) {
@@ -150,6 +156,3 @@ function updateStatistic() {
     done.textContent = listElement.querySelectorAll('.task_todo').length.toString();
 }
 
-function calcStatistic(element) {
-
-}
