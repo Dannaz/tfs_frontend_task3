@@ -1,12 +1,14 @@
 "use strict";
 
 var listElement = document.querySelector('.list');
+
 var filtersElement = document.querySelector('.filters');
 var statisticElement = document.querySelector('.statistic');
 
 var templateElement = document.getElementById('todoTemplate');
 var templateContainer = 'content' in templateElement ? templateElement.content : templateElement;
 
+// описание фильтров
 var filters = {
     ALL: 'all',
     DONE: 'done',
@@ -140,7 +142,7 @@ function insertTodoElement(elem) {
         listElement.appendChild(elem);
     }
 }
-
+//Обновление статистики
 function updateStatistic() {
     var total = statisticElement.querySelector('.statistic__total');
     var todo = statisticElement.querySelector('.statistic__done');
@@ -150,18 +152,7 @@ function updateStatistic() {
     todo.textContent = listElement.querySelectorAll('.task_done').length.toString();
     done.textContent = listElement.querySelectorAll('.task_todo').length.toString();
 }
-
-
-function onFiltersClick(event) {
-    var target = event.target;
-    if (isFilterItem(target)) {
-        target.parentNode.querySelector('.filters__item_selected').classList.remove('filters__item_selected');
-        target.classList.add('filters__item_selected');
-        renderToDoList(target.dataset.filter);
-    }
-}
-
-
+//Перерисовывает список задач в зависимости от текущего фильтра
 function renderToDoList(filter) {
     switch (filter) {
         case filters.ALL:
@@ -175,36 +166,23 @@ function renderToDoList(filter) {
             break;
     }
 }
-
+//Обновляет список вместе со статистикой
 function updateToDoList() {
     var currentFilter = getCurentFilter();
     updateStatistic();
     renderToDoList(currentFilter);
 }
 
-function isFilterItem(target) {
-    return target.classList.contains('filters__item');
+//Обработчик клика по фильтрам
+function onFiltersClick(event) {
+    var target = event.target;
+    if (isFilterItem(target)) {
+        target.parentNode.querySelector('.filters__item_selected').classList.remove('filters__item_selected');
+        target.classList.add('filters__item_selected');
+        renderToDoList(target.dataset.filter);
+    }
 }
-
-function getCurentFilter() {
-    return filtersElement.querySelector('.filters__item_selected').dataset.filter;
-}
-
-function filterByDone(element) {
-    return element.classList.contains('task_done');
-}
-function filterByLeft(element) {
-    return element.classList.contains('task_todo');
-}
-
-function showListItem(item) {
-    item.classList.remove('list__item_hidden');
-}
-
-function hideListItem(item) {
-    item.classList.add('list__item_hidden');
-}
-
+//Функции отображения определенного типа задач
 function showAllToDos() {
     Array.prototype.forEach.call(listElement.children, function(listItem){
         listItem.classList.remove('list__item_hidden');
@@ -227,4 +205,27 @@ function showLeftToDos() {
     //Скрываем все не выполненные задачки
     Array.prototype.filter.call(listElement.children, filterByDone)
         .forEach(hideListItem);
+}
+//Вспомогательные функции
+function isFilterItem(target) {
+    return target.classList.contains('filters__item');
+}
+
+function getCurentFilter() {
+    return filtersElement.querySelector('.filters__item_selected').dataset.filter;
+}
+
+function filterByDone(element) {
+    return element.classList.contains('task_done');
+}
+function filterByLeft(element) {
+    return element.classList.contains('task_todo');
+}
+
+function showListItem(item) {
+    item.classList.remove('list__item_hidden');
+}
+
+function hideListItem(item) {
+    item.classList.add('list__item_hidden');
 }
