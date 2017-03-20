@@ -1,18 +1,17 @@
 "use strict";
 
 var listElement = document.querySelector('.list');
-var filtersElement = document.querySelector('filters');
+var filtersElement = document.querySelector('.filters');
 var statisticElement = document.querySelector('.statistic');
-var itemElementList = listElement.children;
-var todoListEvents = {
-    ON_ADD: 'add',
-    ON_REMOVE: 'remove',
-    ON_DONE: 'done',
-    ON_UNDONE: 'undone'
-};
 
 var templateElement = document.getElementById('todoTemplate');
 var templateContainer = 'content' in templateElement ? templateElement.content : templateElement;
+
+var filters = {
+    ALL: 'all',
+    DONE: 'done',
+    LEFT: 'todo'
+};
 
 // сформируем задачки
 var todoList = [
@@ -63,11 +62,6 @@ function onListClick(event) {
         deleteTodo(element);
         updateStatistic();
     }
-}
-
-function onFiltersClick(event) {
-    var target = event.target;
-    var currentSelection
 }
 
 function isStatusBtn(target) {
@@ -131,6 +125,7 @@ todoList
 updateStatistic();
 
 listElement.addEventListener('click', onListClick);
+filtersElement.addEventListener('click', onFiltersClick);
 
 var inputElement = document.querySelector('.add-task__input');
 inputElement.addEventListener('keydown', onInputKeydown);
@@ -156,3 +151,80 @@ function updateStatistic() {
     done.textContent = listElement.querySelectorAll('.task_todo').length.toString();
 }
 
+
+function onFiltersClick(event) {
+    var target = event.target;
+    if (isFilterItem(target)) {
+        target.parentNode.querySelector('.filters__item_selected').classList.remove('filters__item_selected');
+        target.classList.add('filters__item_selected');
+        renderToDoList(target.dataset.filter);
+    }
+}
+
+
+function renderToDoList(filter) {
+    switch (filter) {
+        case filters.ALL:
+            showAllToDos();
+            break;
+        case filters.DONE:
+            showCompletedToDos();
+            break;
+        case filters.LEFT:
+            showLeftToDos();
+            break;
+    }
+}
+
+function updateToDoList() {
+    var currentFilter = getCurentFilter();
+    updateStatistic();
+    renderToDoList(currentFilter);
+}
+
+function isFilterItem(target) {
+    return target.classList.contains('filters__item');
+}
+
+function getCurentFilter() {
+    return filtersElement.querySelector('.filters__item_selected').dataset.filter;
+}
+
+function filterByDone(element) {
+    return element.classList.contains('task_done');
+}
+function filterByLeft(element) {
+    return element.classList.contains('task_todo');
+}
+
+function showListItem(item) {
+    item.classList.remove('list__item_hidden');
+}
+
+function hideListItem(item) {
+    item.classList.add('list__item_hidden');
+}
+
+function showAllToDos() {
+    Array.prototype.forEach.call(listElement.children, function(listItem){
+        listItem.classList.remove('list__item_hidden');
+    });
+}
+
+function showCompletedToDos() {
+    //Показываем все выполненные задачки
+    Array.prototype.filter.call(listElement.children, filterByDone)
+        .forEach(showListItem);
+    //Скрываем все не выполненные задачки
+    Array.prototype.filter.call(listElement.children, filterByLeft)
+        .forEach(hideListItem);
+}
+
+function showLeftToDos() {
+    //Показываем все выполненные задачки
+    Array.prototype.filter.call(listElement.children, filterByLeft)
+        .forEach(showListItem);
+    //Скрываем все не выполненные задачки
+    Array.prototype.filter.call(listElement.children, filterByDone)
+        .forEach(hideListItem);
+}

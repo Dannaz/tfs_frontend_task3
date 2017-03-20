@@ -97,6 +97,10 @@ body {
     display: block;
 }
 
+.list__item_hidden {
+    display: none;
+}
+
 .list__item:hover{
     background-color: lightyellow;
 }
