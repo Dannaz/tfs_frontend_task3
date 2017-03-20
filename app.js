@@ -54,13 +54,13 @@ function onListClick(event) {
     if (isStatusBtn(target)) {
         element = target.parentNode;
         changeTodoStatus(element);
-        updateStatistic();
+        updateToDoList();
     }
 
     if (isDeleteBtn(target)) {
         element = target.parentNode;
         deleteTodo(element);
-        updateStatistic();
+        updateToDoList();
     }
 }
 
@@ -100,7 +100,7 @@ function onInputKeydown(event) {
 
     var todo = createNewTodo(todoName);
     insertTodoElement(addTodoFromTemplate(todo));
-    updateStatistic();
+    updateToDoList();
 
 }
 
